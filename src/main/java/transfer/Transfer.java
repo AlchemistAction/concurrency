@@ -9,8 +9,8 @@ public class Transfer {
     }
 
     public void transfer(String from, String to, int amount) {
-        String fr = from.intern();
-        String too = to.intern();
+        Account fr = bank.getAccount(from);
+        Account too = bank.getAccount(to);
 
         int fromHash = System.identityHashCode(fr);
         int toHash = System.identityHashCode(too);
@@ -26,7 +26,7 @@ public class Transfer {
         }
     }
 
-    private void synchronizedTransfer(String from, String to, int amount, String fr, String too) {
+    private void synchronizedTransfer(String from, String to, int amount, Account fr, Account too) {
         synchronized (fr) {
             System.out.println("thread " + Thread.currentThread().getId() + " lock " + from);
             synchronized (too) {
