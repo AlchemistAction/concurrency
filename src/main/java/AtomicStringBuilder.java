@@ -1,24 +1,27 @@
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class AtomicStringBuilder {
-    private final AtomicReference<StringBuilder> sbRef;
+    public final AtomicInteger counter = new AtomicInteger();
+    private final AtomicReference<String> sbRef;
 
     public AtomicStringBuilder() {
-        this.sbRef = new AtomicReference<>(new StringBuilder(""));
+        this.sbRef = new AtomicReference<>("");
     }
 
-    public AtomicReference<StringBuilder> getSb() {
+    public AtomicReference<String> getSb() {
         return sbRef;
     }
 
     public void append(String string) {
         this.sbRef.getAndUpdate(ref -> {
+            counter.getAndIncrement();
             if (ref.length() < 128) {
-                ref.append(string);
+                return ref + string;
             } else {
-                ref.append(string).delete(0, ref.length() - 128);
+                String s = ref + string;
+               return s.substring(s.length() - 128);
             }
-            return ref;
         });
     }
 }

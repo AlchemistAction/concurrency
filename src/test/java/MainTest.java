@@ -52,17 +52,13 @@ class MainTest {
 
     @Test
     public void testAtomicStringBuilderRef() {
-        AtomicStringBuilder atomicStringBuilder1 = new AtomicStringBuilder();
+        AtomicStringBuilder atomicStringBuilder = new AtomicStringBuilder();
         Random random = new Random();
         Stream<Integer> infiniteStream = Stream.iterate(0, i -> random.nextInt(10));
-        infiniteStream.parallel().limit(100000).forEach(integer -> atomicStringBuilder1.append(String.valueOf(integer)));
-        System.out.println(atomicStringBuilder1.getSb().get());
-        assertEquals(128, atomicStringBuilder1.getSb().get().length());
+        infiniteStream.parallel().limit(100000).forEach(integer -> atomicStringBuilder.append(String.valueOf(integer)));
 
-        AtomicStringBuilder atomicStringBuilder2 = new AtomicStringBuilder();
-        String[] strings = {"1", "2", "3", "4", "5"};
-        Arrays.stream(strings).parallel().forEach(integer -> atomicStringBuilder2.append(String.valueOf(integer)));
-        System.out.println(atomicStringBuilder2.getSb().get());
-        assertEquals(5, atomicStringBuilder2.getSb().get().length());
+        System.out.println(atomicStringBuilder.getSb().get());
+        System.out.println(atomicStringBuilder.counter.get());
+        assertEquals(128, atomicStringBuilder.getSb().get().length());
     }
 }
