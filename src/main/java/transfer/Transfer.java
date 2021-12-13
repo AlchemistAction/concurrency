@@ -1,16 +1,20 @@
 package transfer;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class Transfer {
     private final Bank bank;
     private static final Object tieLock = new Object();
+    private static final Map<String, Object> syncTable = new ConcurrentHashMap<>();
 
     public Transfer(Bank bank) {
         this.bank = bank;
     }
 
     public void transfer(String from, String to, int amount) {
-        String fr = from;
-        String too = to;
+        Object fr = syncTable.computeIfAbsent(from, s -> new Object());
+        Object too = syncTable.computeIfAbsent(to, s -> new Object());
 
         int fromHash = System.identityHashCode(fr);
         int toHash = System.identityHashCode(too);
@@ -26,7 +30,7 @@ public class Transfer {
         }
     }
 
-    private void synchronizedTransfer(String from, String to, int amount, String fr, String too) {
+    private void synchronizedTransfer(String from, String to, int amount, Object fr, Object too) {
         synchronized (fr) {
             System.out.println("thread " + Thread.currentThread().getId() + " lock " + from);
             synchronized (too) {
